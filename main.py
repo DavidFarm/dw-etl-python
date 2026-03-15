@@ -1,30 +1,7 @@
-from src.extract.extractor import extract_table
-from src.extract.queries import CUSTOMERS, SALES
-from src.transform.transformer import transform_customers, transform_sales
-from src.load.writer import write_all
-from src.utils.logger import get_logger
-
-logger = get_logger("pipeline")
-
+from src.pipeline import run_pipeline
 
 if __name__ == "__main__":
-    logger.info("Pipeline started")
-
-    try:
-        df_customers_raw = extract_table(CUSTOMERS, label="customers")
-        df_sales_raw = extract_table(SALES, label="sales")
-
-        df_customers = transform_customers(df_customers_raw)
-        df_sales = transform_sales(df_sales_raw)
-
-        write_all(df_customers, "customers")
-        write_all(df_sales, "sales")
-
-        logger.info("Pipeline completed successfully")
-
-    except Exception as e:
-        logger.critical(f"Pipeline failed: {e}")
-        raise
+    run_pipeline()
 
 # Data types and null counts
 # print(df_customers.dtypes)
