@@ -1,6 +1,6 @@
 import pandas as pd
 from src.transform.transformer import transform_customers, transform_sales
-
+from src.transform.transformer import enrich_sales_with_currency
 
 def test_transform_customers_columns():
     """Check that transform_customers returns expected columns."""
@@ -41,3 +41,24 @@ def test_transform_sales_margin():
     result = transform_sales(raw)
     assert result["margin"].iloc[0] == 40.0
     assert result["margin_pct"].iloc[0] == 40.0
+
+def test_enrich_sales_with_currency():
+    """Check that currency enrichment adds correct converted column."""
+    df = pd.DataFrame([{
+        "sales_order_number": "SO001",
+        "order_date": pd.Timestamp("2024-01-01"),
+        "customer_key": 1,
+        "product_key": 1,
+        "product_name": "Test Product",
+        "category": "Bikes",
+        "order_quantity": 1,
+        "unit_price": 100.0,
+        "total_product_cost": 60.0,
+        "sales_amount": 100.0,
+        "margin": 40.0,
+        "margin_pct": 40.0
+    }])
+    rates = {"SEK": 10.5}
+    result = enrich_sales_with_currency(df, rates, "SEK")
+    assert "sales_amount_sek" in result.columns
+    assert result["sales_amount_sek"].iloc[0] == 1050.0

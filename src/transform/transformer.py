@@ -53,3 +53,29 @@ def transform_sales(df: pd.DataFrame) -> pd.DataFrame:
     except Exception as e:
         logger.error(f"Failed to transform sales: {e}")
         raise
+
+def enrich_sales_with_currency(
+        df: pd.DataFrame,
+        rates: dict,
+        target_currency: str = "SEK"
+) -> pd.DataFrame:
+    """
+    Enrich sales DataFrame with localised sales amount.
+    Adds a column with sales_amount converted to target currency.
+    """
+    logger.info(f"Enriching sales with {target_currency} conversion...")
+    try:
+        rate = rates.get(target_currency)
+        if rate is None:
+            raise ValueError(f"Currency {target_currency} not found in rates")
+        df = df.copy()
+        df[f"sales_amount_{target_currency.lower()}"] = (
+            df["sales_amount"] * rate
+        ).round(2)
+        logger.info(
+            f"Enriched {len(df)} rows with {target_currency} rate: {rate}"
+        )
+        return df
+    except Exception as e:
+        logger.error(f"Failed to enrich sales with currency: {e}")
+        raise
