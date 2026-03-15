@@ -2,29 +2,29 @@ from src.extract.extractor import extract_table
 from src.extract.queries import CUSTOMERS, SALES
 from src.transform.transformer import transform_customers, transform_sales
 from src.load.writer import write_all
+from src.utils.logger import get_logger
+
+logger = get_logger("pipeline")
+
 
 if __name__ == "__main__":
+    logger.info("Pipeline started")
 
-    print("Extracting customers...")
-    df_customers_raw = extract_table(CUSTOMERS)
-    print(f"  Rows extracted: {len(df_customers_raw)}")
+    try:
+        df_customers_raw = extract_table(CUSTOMERS, label="customers")
+        df_sales_raw = extract_table(SALES, label="sales")
 
-    print("\nExtracting sales...")
-    df_sales_raw = extract_table(SALES)
-    print(f"  Rows extracted: {len(df_sales_raw)}")
+        df_customers = transform_customers(df_customers_raw)
+        df_sales = transform_sales(df_sales_raw)
 
-    print("\nTransforming customers...")
-    df_customers = transform_customers(df_customers_raw)
+        write_all(df_customers, "customers")
+        write_all(df_sales, "sales")
 
-    print("\nTransforming sales...")
-    df_sales = transform_sales(df_sales_raw)
+        logger.info("Pipeline completed successfully")
 
-    print("\nWriting output files...")
-    write_all(df_customers, "customers")
-    write_all(df_sales, "sales")
-
-    print("\nPipeline complete.")
-
+    except Exception as e:
+        logger.critical(f"Pipeline failed: {e}")
+        raise
 
 # Data types and null counts
 # print(df_customers.dtypes)
