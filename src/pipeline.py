@@ -16,6 +16,10 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+"""
+Pipeline orchestrator for dw-etl-python.
+Coordinates extraction, transformation, enrichment, and load stages.
+"""
 
 def run_pipeline() -> None:
     """
