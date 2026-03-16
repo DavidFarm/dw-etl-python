@@ -1,17 +1,17 @@
 CUSTOMERS = """
     SELECT
-        c.CustomerKey,
-        c.FirstName,
-        c.LastName,
-        c.EmailAddress,
-        c.Gender,
-        c.YearlyIncome,
-        c.TotalChildren,
-        c.EnglishEducation        AS Education,
-        c.EnglishOccupation       AS Occupation,
-        g.EnglishCountryRegionName AS Country,
-        g.StateProvinceName        AS State,
-        g.City
+        c.CustomerKey           AS customer_key,
+        c.FirstName             AS first_name,
+        c.LastName              AS last_name,
+        c.EmailAddress          AS email_address,
+        c.Gender                AS gender,
+        c.YearlyIncome          AS yearly_income,
+        c.TotalChildren         AS total_children,
+        c.EnglishEducation      AS education,
+        c.EnglishOccupation     AS occupation,
+        g.EnglishCountryRegionName AS country,
+        g.StateProvinceName     AS state,
+        g.City                  AS city
     FROM
         DimCustomer c
         LEFT JOIN DimGeography g ON c.GeographyKey = g.GeographyKey
@@ -19,17 +19,16 @@ CUSTOMERS = """
 
 SALES = """
     SELECT
-        f.SalesOrderNumber,
-        f.OrderDateKey,
-        f.CustomerKey,
-        f.ProductKey,
-        f.OrderQuantity,
-        f.UnitPrice,
-        f.TotalProductCost,
-        f.SalesAmount,
-        d.FullDateAlternateKey    AS OrderDate,
-        p.EnglishProductName      AS ProductName,
-        p.EnglishProductCategoryName AS Category
+        f.SalesOrderNumber      AS sales_order_number,
+        f.CustomerKey           AS customer_key,
+        f.ProductKey            AS product_key,
+        f.OrderQuantity         AS order_quantity,
+        f.UnitPrice             AS unit_price,
+        f.TotalProductCost      AS total_product_cost,
+        f.SalesAmount           AS sales_amount,
+        d.FullDateAlternateKey  AS order_date,
+        p.EnglishProductName    AS product_name,
+        p.EnglishProductCategoryName AS category
     FROM
         FactInternetSales f
         LEFT JOIN DimDate d      ON f.OrderDateKey = d.DateKey
